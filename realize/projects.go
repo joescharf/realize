@@ -219,8 +219,9 @@ func (p *Project) Reload(path string, stop <-chan bool) {
 		}
 		if err != nil {
 			p.Err(err)
+		} else {
+			p.tools(stop, path, fi)
 		}
-		p.tools(stop, path, fi)
 	}
 	// Prevent fake events on polling startup
 	p.init = true
@@ -518,6 +519,10 @@ func (p *Project) cmd(stop <-chan bool, flag string, global bool) {
 
 // Watch the files tree of a project
 func (p *Project) walk(path string, info os.FileInfo, err error) error {
+	if err != nil {
+		return err
+	}
+
 	if p.shouldIgnore(path) {
 		return filepath.SkipDir
 	}
