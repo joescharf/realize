@@ -34,6 +34,11 @@ func FindGoFiles(dir string) ([]string, error) {
 		name := imports[0]
 		imports = imports[1:]
 
+		// The CGO package doesn't really exist.
+		if name == "C" {
+			continue
+		}
+
 		p, err := build.Import(name, seen[name], 0)
 		if err != nil {
 			return nil, err
